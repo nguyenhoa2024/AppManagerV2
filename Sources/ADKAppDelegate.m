@@ -12,14 +12,18 @@
 
     self.window = [[UIWindow alloc] initWithFrame:UIScreen.mainScreen.bounds];
 
-    // Sanity-check tar before the user hits Backup. Most backup failures we
-    // can imagine come from /usr/bin/tar missing or not executable.
+    // Sanity-check zip/unzip — .adbk is a ZIP under the hood and we shell out
+    // to /usr/bin/zip + /usr/bin/unzip via posix_spawn.
     struct stat st;
-    if (stat("/usr/bin/tar", &st) != 0) {
+    BOOL hasZip   = (stat("/usr/bin/zip",   &st) == 0);
+    BOOL hasUnzip = (stat("/usr/bin/unzip", &st) == 0);
+    if (!(hasZip && hasUnzip)) {
         dispatch_async(dispatch_get_main_queue(), ^{
+            NSString *missing = (!hasZip && !hasUnzip) ? @"/usr/bin/zip and /usr/bin/unzip"
+                              : (!hasZip ? @"/usr/bin/zip" : @"/usr/bin/unzip");
             UIAlertController *a = [UIAlertController
                 alertControllerWithTitle:@"Backup unavailable"
-                                 message:@"/usr/bin/tar is missing on this device. Backup/restore will not work."
+                                 message:[NSString stringWithFormat:@"%@ is missing on this device. Backup/restore will not work.", missing]
                           preferredStyle:UIAlertControllerStyleAlert];
             [a addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
             [self.window.rootViewController presentViewController:a animated:YES completion:nil];

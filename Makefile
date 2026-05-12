@@ -30,7 +30,8 @@ AppDataKit_FILES = \
 	Sources/Models/ADKApp.m \
 	Sources/Models/ADKBackup.m \
 	Sources/Helpers/ADKFileSystem.m \
-	Sources/Helpers/ADKTarRunner.m \
+	Sources/Helpers/ADKZipRunner.m \
+	Sources/Helpers/ADKAdbkPackager.m \
 	Sources/Helpers/ADKByteFormatter.m \
 	Sources/Helpers/ADKLSWorkspace.m
 

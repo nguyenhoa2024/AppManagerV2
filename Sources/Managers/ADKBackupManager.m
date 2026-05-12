@@ -1,6 +1,6 @@
 #import "ADKBackupManager.h"
 #import "ADKFileSystem.h"
-#import "ADKTarRunner.h"
+#import "ADKAdbkPackager.h"
 
 static NSString *const ADKBackupErrorDomain = @"ADKBackupErrorDomain";
 static NSString *const ADKBackupMaxBackupsKey = @"ADKBackupMaxBackupsPerApp";
@@ -41,7 +41,7 @@ static NSString *const ADKBackupMaxBackupsKey = @"ADKBackupMaxBackupsPerApp";
     NSMutableArray<ADKBackup *> *out = [NSMutableArray array];
     for (NSURL *u in children) {
         NSString *ext = u.pathExtension.lowercaseString;
-        if (!([ext isEqualToString:@"gz"] || [ext isEqualToString:@"tgz"])) continue;
+        if (![ext isEqualToString:@"adbk"]) continue;
         NSNumber *size = nil; NSDate *date = nil;
         [u getResourceValue:&size forKey:NSURLFileSizeKey error:NULL];
         [u getResourceValue:&date forKey:NSURLContentModificationDateKey error:NULL];
@@ -67,19 +67,14 @@ static NSString *const ADKBackupMaxBackupsKey = @"ADKBackupMaxBackupsPerApp";
 
     NSURL *backupDir = [ADKFileSystem backupsDirectoryForBundleID:app.bundleIdentifier];
 
-    NSDateFormatter *fmt = [[NSDateFormatter alloc] init];
-    fmt.locale = [NSLocale localeWithLocaleIdentifier:@"en_US_POSIX"];
-    fmt.dateFormat = @"yyyy-MM-dd_HHmmss";
-    NSString *stamp = [fmt stringFromDate:[NSDate date]];
-
-    NSString *fileName = [NSString stringWithFormat:@"%@_%@.tar.gz", app.bundleIdentifier, stamp];
+    // Match the original Apps Manager naming: 14-digit timestamp + ".adbk"
+    // e.g. 61589071627679.adbk
+    NSString *fileName = [NSString stringWithFormat:@"%@.adbk", [ADKAdbkPackager newTimestampString]];
     NSURL *out = [backupDir URLByAppendingPathComponent:fileName];
 
-    NSError *tarErr = nil;
-    if (![ADKTarRunner createArchiveAtURL:out
-                  fromContentsOfDirectory:app.dataContainerURL
-                                    error:&tarErr]) {
-        if (error) *error = tarErr;
+    NSError *pkgErr = nil;
+    if (![ADKAdbkPackager createAdbkAtURL:out forApp:app error:&pkgErr]) {
+        if (error) *error = pkgErr;
         return nil;
     }
 

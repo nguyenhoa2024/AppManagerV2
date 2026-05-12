@@ -1,6 +1,6 @@
 #import "ADKRestoreManager.h"
 #import "ADKFileSystem.h"
-#import "ADKTarRunner.h"
+#import "ADKAdbkPackager.h"
 
 static NSString *const ADKRestoreErrorDomain = @"ADKRestoreErrorDomain";
 
@@ -27,19 +27,9 @@ static NSString *const ADKRestoreErrorDomain = @"ADKRestoreErrorDomain";
         return NO;
     }
 
-    NSError *wipeErr = nil;
-    if (![ADKFileSystem wipeContentsOfDirectoryAtURL:app.dataContainerURL error:&wipeErr]) {
-        if (error) *error = wipeErr;
-        return NO;
-    }
-    NSError *tarErr = nil;
-    if (![ADKTarRunner extractArchiveAtURL:backup.fileURL
-                             intoDirectory:app.dataContainerURL
-                                     error:&tarErr]) {
-        if (error) *error = tarErr;
-        return NO;
-    }
-    return YES;
+    // The packager does its own wipe before extracting per-bundle children, so
+    // skip the redundant wipe here.
+    return [ADKAdbkPackager restoreAdbkAtURL:backup.fileURL toApp:app error:error];
 }
 
 @end
