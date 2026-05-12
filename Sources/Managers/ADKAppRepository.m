@@ -86,7 +86,7 @@ NSNotificationName const ADKAppRepositoryDidLoadNotification = @"ADKAppRepositor
         app.cachedDataSize      = bytes;
         app.cachedDataSizeValid = YES;
 
-        NSArray *waiters;
+        __block NSArray *waiters = nil;
         dispatch_sync(self.pendingSizeLock, ^{
             waiters = [self.pendingSize[key] copy];
             [self.pendingSize removeObjectForKey:key];

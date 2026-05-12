@@ -73,7 +73,7 @@
         UIImage *image = [self _loadIconForApp:app];
         if (image) [self.cache setObject:image forKey:key];
 
-        NSArray *waiters;
+        __block NSArray *waiters = nil;
         dispatch_sync(self.pendingQueue, ^{
             waiters = [self.pending[key] copy];
             [self.pending removeObjectForKey:key];
