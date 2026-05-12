@@ -1,0 +1,29 @@
+# Default: normalize line endings on commit, native on checkout.
+* text=auto
+
+# These files MUST stay LF — they are consumed by macOS/Linux build tools.
+Makefile          text eol=lf
+*.mk              text eol=lf
+*.sh              text eol=lf
+.github/**/*.yml  text eol=lf
+.gitignore        text eol=lf
+.gitattributes    text eol=lf
+
+# Source code: LF (matches what the iOS SDK and Theos ship).
+*.m  text eol=lf
+*.h  text eol=lf
+*.c  text eol=lf
+
+# Property lists: LF inside, but they're often binary-encoded too — treat as text+LF for now.
+*.plist        text eol=lf
+*.storyboard   text eol=lf
+
+# Common binary types.
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.car   binary
+*.nib   binary
+*.tipa  binary
+*.ipa   binary
+*.deb   binary

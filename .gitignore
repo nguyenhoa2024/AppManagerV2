@@ -1,0 +1,11 @@
+.theos/
+theos/
+packages/
+.obj/
+*.deb
+*.tipa
+*.ipa
+*.dSYM
+.DS_Store
+.vscode/
+build/

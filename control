@@ -1,0 +1,9 @@
+Package: com.yourname.appdatakit
+Name: AppDataKit
+Version: 1.0.0
+Architecture: iphoneos-arm
+Description: Multi-select wipe / backup / restore for installed app sandboxes. Clean-room TrollStore app.
+Maintainer: yourname
+Author: yourname
+Section: Utilities
+Depends: firmware (>= 15.0)
