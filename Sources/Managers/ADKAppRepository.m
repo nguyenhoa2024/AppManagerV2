@@ -49,7 +49,10 @@ NSNotificationName const ADKAppRepositoryDidLoadNotification = @"ADKAppRepositor
 - (void)refreshAppsWithCompletion:(void (^)(NSArray<ADKApp *> *))completion
 {
     dispatch_async(self.scanQueue, ^{
-        NSArray<ADKApp *> *apps = [ADKLSWorkspace allInstalledAppsIncludingSystem:NO];
+        // Show User + System + Internal so the list matches what the user has actually
+        // installed (TrollStore apps, OEM apps, Apple system apps with backupable data).
+        // Apps without a dataContainerURL are still shown but actions are disabled on them.
+        NSArray<ADKApp *> *apps = [ADKLSWorkspace allInstalledAppsIncludingSystem:YES];
         self.apps = apps;
         self.hasLoaded = YES;
         dispatch_async(dispatch_get_main_queue(), ^{

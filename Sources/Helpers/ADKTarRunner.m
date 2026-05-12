@@ -55,9 +55,13 @@ static int _adk_run(const char *bin, const char *const argv[], NSString **stderr
 
 + (NSError *)errorWithCode:(NSInteger)code message:(NSString *)msg
 {
+    // Include exit code in the description so the progress-sheet log surfaces
+    // it directly (the user only sees localizedDescription, not the code).
+    NSString *prefix = (code == -1) ? @"posix_spawn failed" : [NSString stringWithFormat:@"tar exit %ld", (long)code];
+    NSString *full   = msg.length ? [NSString stringWithFormat:@"%@ — %@", prefix, msg] : prefix;
     return [NSError errorWithDomain:ADKTarRunnerErrorDomain
                                code:code
-                           userInfo:@{ NSLocalizedDescriptionKey: msg ?: @"tar failed" }];
+                           userInfo:@{ NSLocalizedDescriptionKey: full }];
 }
 
 + (BOOL)createArchiveAtURL:(NSURL *)archiveURL

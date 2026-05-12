@@ -253,6 +253,13 @@
     [self.tableView reloadData];
 }
 
+- (void)tableView:(UITableView *)t willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)ip
+{
+    ADKApp *app = self.visibleApps[(NSUInteger)ip.row];
+    cell.userInteractionEnabled = (app.dataContainerURL != nil) || !self.inSelectMode;
+    cell.contentView.alpha = (app.dataContainerURL == nil) ? 0.45 : 1.0;
+}
+
 - (void)_deselectAll
 {
     [[ADKSelectionState sharedState] deselectAll];
