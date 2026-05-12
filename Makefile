@@ -34,9 +34,25 @@ AppDataKit_FILES = \
 	Sources/Helpers/ADKByteFormatter.m \
 	Sources/Helpers/ADKLSWorkspace.m
 
-AppDataKit_FRAMEWORKS = UIKit CoreGraphics QuartzCore Foundation
+AppDataKit_FRAMEWORKS = UIKit CoreGraphics QuartzCore Foundation ImageIO
 AppDataKit_PRIVATE_FRAMEWORKS =
-AppDataKit_CFLAGS = -fobjc-arc -Wno-deprecated-declarations -Wno-unguarded-availability-new
+
+# Theos only adds the .m file's own directory to the header search path; any
+# `#import "Foo.h"` that crosses subfolders (Sources/UI/Cells -> Sources/Models)
+# needs an explicit -I. Listing every leaf folder is the simplest fix.
+AppDataKit_CFLAGS = -fobjc-arc \
+  -Wno-deprecated-declarations \
+  -Wno-unguarded-availability-new \
+  -ISources \
+  -ISources/UI \
+  -ISources/UI/Cells \
+  -ISources/UI/Controllers \
+  -ISources/UI/Views \
+  -ISources/Managers \
+  -ISources/Cache \
+  -ISources/Models \
+  -ISources/Helpers
+
 AppDataKit_LDFLAGS = -Wl,-segalign,4000
 AppDataKit_CODESIGN_FLAGS = -SResources/Entitlements.plist
 
