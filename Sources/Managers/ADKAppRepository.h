@@ -16,8 +16,8 @@ extern NSNotificationName const ADKAppRepositoryDidLoadNotification;
 @property (nonatomic, readonly, nullable) NSArray<ADKApp *> *cachedApps;
 @property (nonatomic, readonly) BOOL hasLoaded;
 
-- (void)loadAppsWithCompletion:(void (^)(NSArray<ADKApp *> *apps))completion;
-- (void)refreshAppsWithCompletion:(void (^)(NSArray<ADKApp *> *apps))completion;
+- (void)loadAppsWithCompletion:(void (^_Nullable)(NSArray<ADKApp *> *apps))completion;
+- (void)refreshAppsWithCompletion:(void (^_Nullable)(NSArray<ADKApp *> *apps))completion;
 
 /// Lazy, cached recursive size measurement of an app's data container.
 /// Fires `completion` on main once measured. Returns the cached value

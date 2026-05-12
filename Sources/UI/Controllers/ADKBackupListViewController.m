@@ -81,7 +81,9 @@
     __weak typeof(self) weakSelf = self;
     UIContextualAction *del = [UIContextualAction contextualActionWithStyle:UIContextualActionStyleDestructive
                                                                        title:@"Delete"
-                                                                     handler:^(UIContextualAction *_, __kindof UIView *_, void (^completion)(BOOL)) {
+                                                                     handler:^(UIContextualAction *action,
+                                                                               __kindof UIView *sourceView,
+                                                                               void (^completion)(BOOL)) {
         [[ADKBackupManager sharedManager] removeBackup:b error:NULL];
         [weakSelf _reload];
         completion(YES);
